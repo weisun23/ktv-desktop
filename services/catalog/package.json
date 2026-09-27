@@ -1,0 +1,14 @@
+{
+  "name": "@ktv/catalog",
+  "version": "0.1.0",
+  "private": true,
+  "description": "曲库服务：muse.db 安装、读取与 HTTP API",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "install:db": "node --experimental-sqlite --no-warnings src/cli.js",
+    "serve": "node --experimental-sqlite --no-warnings src/server.js",
+    "test": "node --experimental-sqlite --no-warnings test/db-test.js",
+    "test:server": "node --experimental-sqlite --no-warnings test/server-test.js"
+  }
+}

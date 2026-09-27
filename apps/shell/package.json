@@ -1,0 +1,93 @@
+{
+  "name": "@ktv/shell",
+  "version": "0.5.11",
+  "private": true,
+  "description": "Windows 桌面版 KTV 点歌系统",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "smoke": "electron . --smoke",
+    "test:live": "node test/live-play-test.js && node test/live-recovery-test.js && node test/live-cache-test.js",
+    "diag": "node --experimental-sqlite --no-warnings test/diag-song.js",
+    "test:unit": "node ../player/test/ts-source-test.js && node ../player/test/mpv-player-test.js && node ../player/test/subtitle-attach-test.js && node ../player/test/source-switch-test.js && node ../player/test/accomp-hotswitch-test.js && node test/online-queue-async-test.js && node test/ipc-channels-test.js && node test/platform-auth-test.js && node test/state-test.js && node test/supervisor-test.js && node test/downloads-test.js && node test/repair-test.js && node test/tsdecrypt-test.js && node test/separator-test.js && node test/lyrics-test.js && node test/ass-lyrics-test.js && node test/covers-test.js && node test/lan-test.js",
+    "dist": "electron-builder --win",
+    "dist:dir": "electron-builder --win --dir"
+  },
+  "dependencies": {
+    "@ktv/ktv-api": "file:../../packages/ktv-api",
+    "@ktv/player": "file:../player",
+    "qrcode-generator": "^2.0.4"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "author": "ktv-desktop",
+  "build": {
+    "appId": "com.ktv.desktop",
+    "productName": "KTV点歌系统",
+    "executableName": "KTV Desktop",
+    "copyright": "Copyright © 2026",
+    "directories": {
+      "output": "../../release",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "!**/*.map"
+    ],
+    "extraResources": [
+      {
+        "from": "../../resources/runtime",
+        "to": "runtime"
+      },
+      {
+        "from": "../../services/catalog/src",
+        "to": "app/services/catalog/src"
+      },
+      {
+        "from": "../../services/catalog/package.json",
+        "to": "app/services/catalog/package.json"
+      },
+      {
+        "from": "../../services/separator",
+        "to": "app/services/separator"
+      },
+      {
+        "from": "../web/dist",
+        "to": "app/web"
+      }
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "include": "build/installer.nsh",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "KTV点歌系统"
+    }
+  }
+}

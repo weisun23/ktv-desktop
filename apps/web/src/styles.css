@@ -1,0 +1,376 @@
+/* 主题变量
+   ========
+   所有颜色都走变量，`<html data-theme="...">` 一切换整套就变。
+   默认（不带 data-theme）是「暗夜」。
+
+   ⚠️ 加主题时**不要**在组件里写死颜色 —— 之前有 52 处硬编码，
+   换主题会只换一半，看着像坏了。这里把常用色都收了进来。
+*/
+:root {
+  color-scheme: dark;
+
+  /* 底色三层：窗口 / 面板 / 面板里的次级块 */
+  --bg: #0b1016;
+  --panel: #151d27;
+  --panel-2: #101822;
+  --panel-3: #1a2634;
+
+  /* 分隔线：正常 / 强一点 */
+  --line: #24303d;
+  --line-2: #3d4c5c;
+
+  /* 文字：主 / 次 / 弱 / 更弱 */
+  --text: #e8eef5;
+  --text-2: #b9cade;
+  --dim: #8fa3b8;
+  --dim-2: #64798f;
+
+  /* 主色（选中、播放中、主按钮） */
+  --focus: #27cca4;
+  --focus-fill: #17604f;
+  --focus-hover: #1f7a61;
+  --focus-border: #1f8a70;
+  --on-focus: #d8fff5;
+  --on-focus-deep: #06231c;
+
+  /* 列表行 */
+  --row-hover: #1b2634;
+  --row-active: #12352d;
+
+  /* 普通按钮 */
+  --btn: #1d2836;
+  --btn-hover: #263447;
+  --btn-border-hover: #35485e;
+
+  /* 金色：提示 / 未就绪 / 警告 */
+  --gold: #f5be59;
+  --gold-line: #6b5417;
+  --gold-bg: #3a2d10;
+  --gold-text: #ffd98a;
+
+  /* 红：强调 / 危险 */
+  --accent: #fd3359;
+  --accent-bg: #6b2434;
+  --accent-text: #ff8ea3;
+
+  /* 蓝：在线源 / 在线取流 */
+  --online: #4a9eff;
+  --online-fill: #1d4a72;
+  --online-text: #e2f1ff;
+
+  --scroll: #2a3949;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+
+/* 午夜蓝：更深、更冷，主色换成青蓝 */
+[data-theme="midnight"] {
+  --bg: #070b14;
+  --panel: #0f1626;
+  --panel-2: #0a111d;
+  --panel-3: #16203a;
+  --line: #1e2a44;
+  --line-2: #33456b;
+  --text: #e6edfb;
+  --text-2: #b3c2e0;
+  --dim: #8494b8;
+  --dim-2: #5c6b8f;
+  --focus: #58b6ff;
+  --focus-fill: #1b4a7a;
+  --focus-hover: #236099;
+  --focus-border: #2f78bd;
+  --on-focus: #e2f1ff;
+  --on-focus-deep: #04182c;
+  --row-hover: #16203a;
+  --row-active: #123253;
+  --btn: #16203a;
+  --btn-hover: #1e2c4d;
+  --btn-border-hover: #33456b;
+  --gold: #f0c368;
+  --gold-line: #6a5522;
+  --gold-bg: #2f2712;
+  --gold-text: #ffdf9e;
+  --accent: #ff5d7a;
+  --accent-bg: #5e1f31;
+  --accent-text: #ffa3b5;
+  --online: #58b6ff;
+  --online-fill: #1b4a7a;
+  --online-text: #e2f1ff;
+  --scroll: #24314f;
+}
+
+/* 暖棕：KTV 暖色调（琥珀 + 暗棕），灯光偏暗的包厢更舒服 */
+[data-theme="warm"] {
+  --bg: #14100c;
+  --panel: #1e1811;
+  --panel-2: #191309;
+  --panel-3: #2a2118;
+  --line: #362b1f;
+  --line-2: #4d3d2c;
+  --text: #f6ecdd;
+  --text-2: #dcc7a8;
+  --dim: #b09877;
+  --dim-2: #7d6a52;
+  --focus: #f0a63c;
+  --focus-fill: #7a4d16;
+  --focus-hover: #955f1c;
+  --focus-border: #b3741f;
+  --on-focus: #fff3dc;
+  --on-focus-deep: #2a1806;
+  --row-hover: #2a2118;
+  --row-active: #43301a;
+  --btn: #2a2118;
+  --btn-hover: #3a2d20;
+  --btn-border-hover: #4d3d2c;
+  --gold: #f0c368;
+  --gold-line: #6a5522;
+  --gold-bg: #33280f;
+  --gold-text: #ffdf9e;
+  --accent: #e05a4a;
+  --accent-bg: #5c231b;
+  --accent-text: #ffa596;
+  --online: #63b0e8;
+  --online-fill: #234b66;
+  --online-text: #e2f1ff;
+  --scroll: #3d3021;
+}
+
+/* 舞台霓虹：紫红主色，暗场氛围更强。 */
+[data-theme="neon"] {
+  --bg: #090b16;
+  --panel: #12162a;
+  --panel-2: #0c1020;
+  --panel-3: #1b2140;
+  --line: #252c4c;
+  --line-2: #3b456f;
+  --text: #eef0ff;
+  --text-2: #c2c8ea;
+  --dim: #8e96c2;
+  --dim-2: #626a96;
+  --focus: #d45cff;
+  --focus-fill: #6b268f;
+  --focus-hover: #8a35b5;
+  --focus-border: #a344d1;
+  --on-focus: #f9e9ff;
+  --on-focus-deep: #260b33;
+  --row-hover: #1a1f3a;
+  --row-active: #342054;
+  --btn: #1a2038;
+  --btn-hover: #252d4d;
+  --btn-border-hover: #3b456f;
+  --gold: #ffd166;
+  --gold-line: #6f581c;
+  --gold-bg: #382b10;
+  --gold-text: #ffe29a;
+  --accent: #ff4f8b;
+  --accent-bg: #6e1f45;
+  --accent-text: #ff9fc0;
+  --online: #5ad1ff;
+  --online-fill: #174a6c;
+  --online-text: #e2f8ff;
+  --scroll: #303a62;
+}
+
+/* 翡翠：深绿低饱和，适合长时间观看。 */
+[data-theme="jade"] {
+  --bg: #07110f;
+  --panel: #0e1d1a;
+  --panel-2: #0a1714;
+  --panel-3: #162b26;
+  --line: #213d36;
+  --line-2: #345c50;
+  --text: #e8f7f2;
+  --text-2: #b6d8cd;
+  --dim: #86a89d;
+  --dim-2: #5f7e74;
+  --focus: #38d39f;
+  --focus-fill: #17644d;
+  --focus-hover: #1f7d60;
+  --focus-border: #269b76;
+  --on-focus: #e4fff6;
+  --on-focus-deep: #042119;
+  --row-hover: #122823;
+  --row-active: #123c31;
+  --btn: #142b25;
+  --btn-hover: #1d3a32;
+  --btn-border-hover: #345c50;
+  --gold: #e8c16c;
+  --gold-line: #665321;
+  --gold-bg: #302810;
+  --gold-text: #ffe2a3;
+  --accent: #ff6b6b;
+  --accent-bg: #642525;
+  --accent-text: #ffa3a3;
+  --online: #5cc8ff;
+  --online-fill: #1a4966;
+  --online-text: #e2f5ff;
+  --scroll: #2a4b42;
+}
+
+/* 浅色：白天 / 亮房间用。视频区本来就是黑的，对比没问题。 */
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #eef2f7;
+  --panel: #ffffff;
+  --panel-2: #f5f8fc;
+  --panel-3: #e9eff6;
+  --line: #d5dee9;
+  --line-2: #b7c5d6;
+  --text: #16202c;
+  --text-2: #33475e;
+  --dim: #5a6c81;
+  --dim-2: #8394a8;
+  --focus: #0f9d7c;
+  --focus-fill: #0f9d7c;
+  --focus-hover: #0c8468;
+  --focus-border: #0f9d7c;
+  --on-focus: #ffffff;
+  --on-focus-deep: #ffffff;
+  --row-hover: #eaf1f8;
+  --row-active: #d7f1e9;
+  --btn: #f7fafd;
+  --btn-hover: #e9f1f9;
+  --btn-border-hover: #b7c5d6;
+  --gold: #a9761a;
+  --gold-line: #ddc184;
+  --gold-bg: #fdf4e2;
+  --gold-text: #8a6413;
+  --accent: #d9264a;
+  --accent-bg: #fde8ec;
+  --accent-text: #b81f3e;
+  --online: #1c6fd0;
+  --online-fill: #1c6fd0;
+  --online-text: #ffffff;
+  --scroll: #c4d0de;
+  --shadow: 0 10px 30px rgba(23, 42, 66, .16);
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  font-size: 15px;
+  user-select: none;
+  transition: background .18s, color .18s;
+}
+
+/* 输入类控件必须恢复文本选择；否则 Electron + Windows 输入法可能出现
+   候选框正常弹出但文字无法提交到 input 的情况。 */
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: var(--btn);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, transform .06s;
+}
+button:hover:not(:disabled) { background: var(--btn-hover); border-color: var(--btn-border-hover); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { opacity: .38; cursor: not-allowed; }
+
+/* 遥控器/键盘焦点必须清晰可见 */
+button:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button.primary { background: var(--focus-fill); border-color: var(--focus-border); }
+button.primary:hover:not(:disabled) { background: var(--focus-hover); }
+button.active { background: var(--focus-fill); border-color: var(--focus); color: var(--on-focus); }
+
+
+/* ── 滑块 ────────────────────────────────────────────────────
+   Windows 上原生 range 是一条细线 + 一个小方块，和整个界面的观感差很远。
+   统一成「圆角轨道 + 圆形滑块」，已播放部分用主题主色填充。
+
+   填充靠 --pct 变量（由组件按当前值算出来），因为纯 CSS 拿不到 range 的值。
+   没设 --pct 时退化成整条灰轨道，不会出错。 */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right,
+    var(--focus) 0, var(--focus) var(--pct, 0%),
+    var(--line-2) var(--pct, 0%), var(--line-2) 100%);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px; height: 14px; margin-top: -4px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 2px solid var(--focus);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+  transition: transform .1s, box-shadow .12s;
+}
+input[type=range]:hover:not(:disabled)::-webkit-slider-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--focus) 22%, transparent);
+}
+input[type=range]:active:not(:disabled)::-webkit-slider-thumb { transform: scale(1.05); }
+input[type=range]:focus-visible { outline: none; }
+input[type=range]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--focus) 35%, transparent);
+}
+input[type=range]:disabled { cursor: not-allowed; opacity: .45; }
+input[type=range]:disabled::-webkit-slider-thumb { border-color: var(--dim-2); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* 遥控器/低性能设备：尊重系统的“减少动态效果”设置 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 大屏 / 遥控器密度 ─────────────────────────────────────
+   自动模式在 1600px 以上启用；也可以在设置里强制“舒适”或“大屏”。 */
+html[data-density="tv"] .song {
+  min-height: 68px; padding-top: 10px; padding-bottom: 10px;
+}
+html[data-density="tv"] .song .cover { width: 48px; height: 48px; }
+html[data-density="tv"] .song .avatar { width: 48px; height: 48px; }
+html[data-density="tv"] .song .info .name { font-size: 16px; }
+html[data-density="tv"] .song .info .meta { font-size: 13px; }
+html[data-density="tv"] .queue-panel .row { min-height: 62px; padding: 10px; }
+html[data-density="tv"] .queue-panel .row .name { font-size: 15px; }
+html[data-density="tv"] .side-panel .seg-tabs button { min-height: 44px; font-size: 14px; }
+html[data-density="tv"] .catalog .tabs button { min-height: 42px; font-size: 14px; }
+html[data-density="tv"] .pager button { min-width: 40px; min-height: 40px; }
+html[data-density="tv"] .letters button { min-width: 30px; height: 32px; font-size: 13px; }
+html[data-density="tv"] .song:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+@media (min-width: 1600px) {
+  html[data-density="auto"] .song { min-height: 68px; padding-top: 10px; padding-bottom: 10px; }
+  html[data-density="auto"] .song .cover { width: 48px; height: 48px; }
+  html[data-density="auto"] .song .avatar { width: 48px; height: 48px; }
+  html[data-density="auto"] .song .info .name { font-size: 16px; }
+  html[data-density="auto"] .side-panel .seg-tabs button { min-height: 44px; }
+  html[data-density="auto"] .pager button { min-width: 40px; min-height: 40px; }
+}

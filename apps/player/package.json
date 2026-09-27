@@ -1,0 +1,15 @@
+{
+  "name": "@ktv/player",
+  "version": "0.1.0",
+  "private": true,
+  "description": "libVLC 播放器封装：原伴唱切换（切音轨/切声道）、seek、音量",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "probe": "node probe.js",
+    "test": "node test/ts-source-test.js"
+  },
+  "dependencies": {
+    "koffi": "^3.3.1"
+  }
+}

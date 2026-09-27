@@ -1,0 +1,23 @@
+{
+  "name": "ktv-desktop",
+  "version": "0.5.11",
+  "private": true,
+  "description": "Windows 桌面版 KTV 点歌系统（Electron + Vue 3 + libVLC + muse.db 曲库 + 在线取流）",
+  "scripts": {
+    "setup": "pwsh -File poc/player/fetch-vlc.ps1 && pwsh -File poc/player/fetch-mpv.ps1 && pwsh -File poc/player/fetch-node.ps1 && pwsh -File poc/player/make-testmedia.ps1",
+    "install:catalog": "npm --prefix services/catalog run install:db --",
+    "build:web": "npm --prefix apps/web run build",
+    "start": "npm --prefix apps/shell start",
+    "dev": "npm --prefix apps/shell run dev",
+    "serve:catalog": "npm --prefix services/catalog run serve",
+    "smoke": "npm --prefix apps/shell run smoke",
+    "test:player": "node apps/player/test/player-smoke.js && node apps/player/test/player-class-test.js",
+    "test:catalog": "npm --prefix services/catalog test && npm --prefix services/catalog run test:server",
+    "test:api": "npm --prefix packages/ktv-api test",
+    "test:live": "npm --prefix apps/shell run test:live",
+    "test:poc": "pwsh -File poc/player/verify.ps1",
+    "test": "npm run test:player && npm run test:shell && npm run test:catalog && npm run test:api && npm run smoke",
+    "test:shell": "npm --prefix apps/shell run test:unit",
+    "diag": "npm --prefix apps/shell run diag --"
+  }
+}

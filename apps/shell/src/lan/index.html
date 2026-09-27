@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1016">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>KTV 点歌</title>
+<style>
+  :root { --bg:#0b1016; --panel:#151d27; --panel2:#101822; --line:#24303d;
+          --text:#e8eef5; --dim:#8fa3b8; --focus:#27cca4; --gold:#f5be59; --accent:#fd3359; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin:0; background:var(--bg); color:var(--text);
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; font-size:16px; }
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  header { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px;
+    padding:12px 14px; background:rgba(11,16,22,.94); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line); }
+  header .brand { font-weight:600; font-size:17px; }
+  header .spacer { flex:1; }
+  header .dot { width:8px; height:8px; border-radius:50%; background:#3d4c5c; }
+  header .dot.on { background:var(--focus); box-shadow:0 0 8px var(--focus); }
+
+  .wrap { padding:12px 12px 24px; max-width:720px; margin:0 auto; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin-bottom:12px; }
+  .now .label { font-size:12px; color:var(--dim); }
+  .now .title { font-size:19px; font-weight:600; margin-top:4px; word-break:break-all; }
+  .now .singer { font-size:13px; color:var(--dim); margin-top:3px; }
+  .now .bar { height:4px; background:var(--panel2); border-radius:2px; margin-top:10px; overflow:hidden; }
+  .now .bar > i { display:block; height:100%; background:var(--focus); width:0; transition:width .5s linear; }
+  .now .t { display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin-top:5px; }
+  .now .ctrl { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .now .ctrl button { flex:none; padding:10px 14px; font-size:14px; }
+  .now .ctrl .volwrap { display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+  .now .ctrl .volicon { font-size:14px; flex:none; }
+  .now .ctrl input[type=range] { flex:1; min-width:0; accent-color:var(--focus); }
+
+  .searchbar { display:flex; gap:8px; }
+  input[type=search] { flex:1; min-width:0; background:var(--panel2); color:var(--text);
+    border:1px solid var(--line); border-radius:10px; padding:12px 14px; font:inherit; }
+  input[type=search]:focus { outline:2px solid var(--focus); outline-offset:1px; }
+  button { font:inherit; color:inherit; background:#1d2836; border:1px solid var(--line);
+    border-radius:10px; padding:12px 16px; cursor:pointer; }
+  button:active { transform:translateY(1px); }
+  button:disabled { opacity:.4; }
+  button.primary { background:#17604f; border-color:#1f8a70; }
+  button.ordered { background:#12352d; border-color:#1f7a61; color:var(--focus); }
+
+  .tabs { display:flex; gap:8px; margin:14px 0 10px; }
+  .tabs button { flex:1; padding:10px; font-size:14px; }
+  .tabs button.on { background:#17604f; border-color:var(--focus); color:#d8fff5; }
+
+  .song { display:flex; align-items:center; gap:10px; background:var(--panel);
+    border:1px solid transparent; border-radius:10px; padding:10px 12px; margin-bottom:6px; }
+  .song .info { flex:1; min-width:0; }
+  .song .name { font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .song .meta { font-size:12px; color:var(--dim); margin-top:2px; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; }
+  .song button { padding:9px 14px; font-size:14px; flex:none; }
+  .song.playing { border-color:var(--focus); background:#12352d; }
+  .song .badge { font-size:11px; color:var(--focus); border:1px solid #1f7a61;
+    background:#12352d; border-radius:6px; padding:3px 7px; flex:none; }
+  .song .idx { width:22px; text-align:center; color:var(--dim); font-size:13px; flex:none; }
+  .empty { text-align:center; color:var(--dim); padding:28px 10px; font-size:14px; }
+  .more { width:100%; margin-top:6px; }
+  .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%);
+    background:#17604f; color:#eafff9; padding:11px 18px; border-radius:10px;
+    font-size:14px; max-width:86vw; text-align:center; z-index:20;
+    opacity:0; pointer-events:none; transition:opacity .2s; }
+  .toast.on { opacity:1; }
+  .toast.warn { background:#6b5417; color:#fff4d8; }
+</style>
+</head>
+<body>
+<header>
+  <span class="dot" id="dot"></span>
+  <span class="brand">KTV 点歌</span>
+  <span class="spacer"></span>
+  <span style="font-size:12px;color:var(--dim)" id="qlen"></span>
+</header>
+
+<div class="wrap">
+  <div class="card now">
+    <div class="label">正在播放</div>
+    <div class="title" id="nowTitle">—</div>
+    <div class="singer" id="nowSinger"></div>
+    <div class="bar"><i id="nowBar"></i></div>
+    <div class="t"><span id="nowTime">00:00</span><span id="nowLen">00:00</span></div>
+    <div class="ctrl">
+      <button id="btnToggle" title="播放 / 暂停">暂停</button>
+      <button id="btnReplay" title="从头重唱">重唱</button>
+      <button id="btnNext" title="切到下一首">切歌</button>
+      <span class="volwrap"><span class="volicon">🔊</span>
+        <input id="vol" type="range" min="0" max="150" value="80"></span>
+    </div>
+  </div>
+
+  <div class="searchbar">
+    <input type="search" id="kw" placeholder="搜歌名 / 歌手 / 拼音首字母" enterkeyhint="search">
+    <button class="primary" id="btnSearch">搜索</button>
+  </div>
+
+  <div class="tabs">
+    <button class="on" data-tab="hot">热歌榜</button>
+    <button data-tab="search">搜索结果</button>
+    <button data-tab="queue">已点</button>
+  </div>
+
+  <div id="list"><div class="empty">加载中…</div></div>
+  <button class="more" id="btnMore" style="display:none">加载更多</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var tab = 'hot';
+  var offset = 0;
+  var hasMore = false;
+  var lastQueue = [];
+  var PAGE = 20;
+
+  function $(id) { return document.getElementById(id); }
+  function api(path, opts) {
+    return fetch(path, opts).then(function (r) { return r.json(); });
+  }
+  function toast(msg, warn) {
+    var el = $('toast');
+    el.textContent = msg;
+    el.className = 'toast on' + (warn ? ' warn' : '');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.className = 'toast'; }, 2200);
+  }
+  function fmt(ms) {
+    if (!ms || ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000);
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // ── 状态：正在播放 + 已点队列 ──
+  function renderStatus(s) {
+    var song = s.song || {};
+    $('nowTitle').textContent = song.name || '空闲';
+    $('nowSinger').textContent = song.singer || '';
+    var pct = s.length ? Math.min(100, (s.time / s.length) * 100) : 0;
+    $('nowBar').style.width = pct + '%';
+    $('nowTime').textContent = fmt(s.time);
+    $('nowLen').textContent = fmt(s.length);
+    $('dot').className = 'dot' + (s.playing ? ' on' : '');
+    $('btnToggle').textContent = s.playing ? '暂停' : '播放';
+    $('btnNext').disabled = !s.hasNext;
+    if (typeof s.volume === 'number' && document.activeElement !== $('vol')) $('vol').value = s.volume;
+    lastQueue = s.queue || [];
+    $('qlen').textContent = lastQueue.length ? ('已点 ' + lastQueue.length + ' 首') : '';
+    if (tab === 'queue') renderQueue();
+    else markOrdered();
+  }
+
+  /** 曲库/搜索结果里把"已点"的标出来并禁用，避免重复点 */
+  function markOrdered() {
+    var ids = lastQueue.map(function (q) { return q.songId; });
+    var rows = document.querySelectorAll('#list .song[data-id]');
+    for (var i = 0; i < rows.length; i++) {
+      var btn = rows[i].querySelector('button');
+      if (!btn) continue;
+      var on = ids.indexOf(rows[i].getAttribute('data-id')) >= 0;
+      btn.disabled = on;
+      btn.className = on ? 'ordered' : '';
+      btn.textContent = on ? '已点' : '点歌';
+    }
+  }
+
+  function renderSongs(songs) {
+    if (!songs.length) { $('list').innerHTML = '<div class="empty">没有结果</div>'; return; }
+    var html = songs.map(function (s) {
+      return '<div class="song" data-id="' + esc(s.id) + '">'
+        + '<div class="info"><div class="name">' + esc(s.name) + '</div>'
+        + '<div class="meta">' + esc(s.singer || '—')
+        + (s.lang ? ' · ' + esc(s.lang) : '')
+        + (s.accomp ? ' · ' + (s.accomp === 1 ? '声道 1' : '声道 2') : '')
+        + '</div></div>'
+        + '<button data-order="' + esc(s.id) + '">点歌</button></div>';
+    }).join('');
+    $('list').innerHTML = html;
+    markOrdered();
+  }
+
+  function renderQueue() {
+    if (!lastQueue.length) { $('list').innerHTML = '<div class="empty">还没有人点歌</div>'; return; }
+    var html = lastQueue.map(function (q, i) {
+      var cls = q.status === 'playing' ? 'song playing' : 'song';
+      return '<div class="' + cls + '">'
+        + '<span class="idx">' + (q.status === 'playing' ? '▶' : (i + 1)) + '</span>'
+        + '<div class="info"><div class="name">' + esc(q.name) + '</div>'
+        + '<div class="meta">' + esc(q.singer || '—') + (q.status === 'playing' ? ' · 正在唱' : '') + '</div></div>'
+        + (q.status === 'playing' ? '<span class="badge">播放中</span>' : '')
+        + '</div>';
+    }).join('');
+    $('list').innerHTML = html;
+  }
+
+  // ── 数据加载 ──
+  function loadHot(more) {
+    if (!more) offset = 0;
+    return api('/api/hot?limit=' + PAGE + '&offset=' + offset).then(function (r) {
+      hasMore = r.hasMore;
+      if (more) {
+        var extra = document.createElement('div');
+        extra.innerHTML = r.songs.map(function (s) { return songRow(s); }).join('');
+        while (extra.firstChild) $('list').appendChild(extra.firstChild);
+        markOrdered();
+      } else {
+        renderSongs(r.songs);
+      }
+      offset += r.songs.length;
+      $('btnMore').style.display = hasMore ? 'block' : 'none';
+    }).catch(function (e) { toast('加载失败：' + e.message, 1); });
+  }
+
+  function songRow(s) {
+    return '<div class="song" data-id="' + esc(s.id) + '">'
+      + '<div class="info"><div class="name">' + esc(s.name) + '</div>'
+      + '<div class="meta">' + esc(s.singer || '—') + (s.lang ? ' · ' + esc(s.lang) : '') + '</div></div>'
+      + '<button data-order="' + esc(s.id) + '">点歌</button></div>';
+  }
+
+  function doSearch(more) {
+    var kw = $('kw').value.trim();
+    if (!kw) { toast('先输入歌名或歌手', 1); return Promise.resolve(); }
+    if (!more) { offset = 0; setTab('search'); }
+    return api('/api/search?kw=' + encodeURIComponent(kw) + '&limit=' + PAGE + '&offset=' + offset)
+      .then(function (r) {
+        hasMore = r.hasMore;
+        if (more) {
+          var extra = document.createElement('div');
+          extra.innerHTML = r.songs.map(songRow).join('');
+          while (extra.firstChild) $('list').appendChild(extra.firstChild);
+          markOrdered();
+        } else {
+          renderSongs(r.songs);
+        }
+        offset += r.songs.length;
+        $('btnMore').style.display = hasMore ? 'block' : 'none';
+        if (!r.songs.length && !more) toast('没找到「' + kw + '」', 1);
+      })
+      .catch(function (e) { toast('搜索失败：' + e.message, 1); });
+  }
+
+  function order(songId, btn) {
+    btn.disabled = true;
+    api('/api/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ songId: songId }),
+    }).then(function (r) {
+      if (r.ok) {
+        toast(r.startedImmediately ? '马上开唱！' : '已加入已点列表');
+        btn.className = 'ordered'; btn.textContent = '已点';
+        refreshStatus();
+      } else {
+        btn.disabled = false;
+        toast(r.message || r.error || '点歌失败', 1);
+      }
+    }).catch(function (e) {
+      btn.disabled = false;
+      toast('点歌失败：' + e.message, 1);
+    });
+  }
+
+  /** 播放控制：只发"点了不会出事"的动作 */
+  function control(action, value) {
+    return api('/api/control', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: action, value: value }),
+    }).then(function (r) {
+      if (!r.ok) toast(r.error || '操作失败', 1);
+      else if (action === 'next') toast('已切歌');
+      else if (action === 'replay') toast('从头重唱');
+      refreshStatus();
+      return r;
+    }).catch(function (e) { toast('操作失败：' + e.message, 1); });
+  }
+
+  function setTab(t) {
+    tab = t;
+    var bs = document.querySelectorAll('.tabs button');
+    for (var i = 0; i < bs.length; i++) bs[i].className = bs[i].getAttribute('data-tab') === t ? 'on' : '';
+    $('btnMore').style.display = 'none';
+    if (t === 'queue') renderQueue();
+    else if (t === 'hot') loadHot(false);
+    else { $('list').innerHTML = '<div class="empty">输入关键词后点搜索</div>'; }
+  }
+
+  function refreshStatus() {
+    return api('/api/status').then(renderStatus).catch(function () {});
+  }
+
+  // ── 事件 ──
+  $('list').addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button[data-order]') : null;
+    if (b) order(b.getAttribute('data-order'), b);
+  });
+  $('btnSearch').addEventListener('click', function () { doSearch(false); });
+  $('kw').addEventListener('keydown', function (e) { if (e.key === 'Enter') doSearch(false); });
+  $('btnToggle').addEventListener('click', function () { control('toggle'); });
+  $('btnNext').addEventListener('click', function () { control('next'); });
+  $('btnReplay').addEventListener('click', function () { control('replay'); });
+  // 音量拖动很频繁，松手才发，避免刷接口
+  $('vol').addEventListener('change', function () { control('volume', Number(this.value)); });
+  $('btnMore').addEventListener('click', function () {
+    if (tab === 'hot') loadHot(true); else if (tab === 'search') doSearch(true);
+  });
+  var tabs = document.querySelectorAll('.tabs button');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function () { setTab(this.getAttribute('data-tab')); });
+  }
+
+  // 首屏 + 轮询（页面在后台时停掉，省电）
+  refreshStatus();
+  loadHot(false);
+  setInterval(function () { if (!document.hidden) refreshStatus(); }, 3000);
+})();
+</script>
+</body>
+</html>

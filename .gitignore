@@ -1,0 +1,55 @@
+# 依赖运行时（用 poc/player/fetch-*.ps1 获取，不入库）
+resources/runtime/vlc/
+resources/runtime/mpv/
+resources/runtime/node/
+resources/plugins/
+resources/runtime/*.zip
+
+# 生成物（用 poc/player/make-testmedia.ps1 获取，不入库）
+testmedia/*.ts
+testmedia/*.mp4
+
+# 曲库数据（体积大，另行分发）
+resources/catalog/*.db
+resources/catalog/*.gz*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node / Rust
+node_modules/
+dist/
+target/
+
+# 本地配置与日志
+.env
+.env.local
+*.log
+
+# 曲库媒体文件（体积大，用户自行放入）
+resources/catalog/video/
+resources/catalog/db_version.txt
+
+# 取流服务凭证（含第三方密钥，绝不入库）
+resources/config/
+
+# 用户状态（队列/已唱/收藏/歌单/设置）
+resources/state/
+resources/lyrics/
+
+# 打包产物与 electron-builder 缓存（体积大，可重新生成）
+release/
+.eb-cache/
+
+# 诊断临时产物（截图/日志/一次性脚本）
+.tmp-diag/
+
+# Windows 上误用 %VAR% 时会被字面创建的目录
+apps/shell/%SystemDrive%/
+%SystemDrive%/
+# 生成缓存与诊断报告（用户机器产生，不入库）
+resources/covers/
+poc/player/*-report.json

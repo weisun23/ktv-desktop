@@ -1,0 +1,12 @@
+{
+  "name": "@ktv/ktv-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KTV 取流 provider：把曲目解析成可播放地址（凭证由本地配置提供）",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node test/maidong-test.js && node test/online-search-test.js && node test/platform-registry-test.js",
+    "test:live": "node test/maidong-live-test.js"
+  }
+}

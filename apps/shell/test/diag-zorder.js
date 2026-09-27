@@ -1,0 +1,42 @@
+'use strict';
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
+const { createRequire } = require('module');
+const koffi = createRequire(require.resolve('@ktv/player'))('koffi');
+const { VideoSurface } = require('@ktv/player');
+const user32 = koffi.load('user32.dll');
+const EnumChildWindows = user32.func('int EnumChildWindows(void *h, void *cb, void *l)');
+const GetClassName = user32.func('int GetClassNameA(void *h, void *buf, int n)');
+const GetWindowRect = user32.func('int GetWindowRect(void *h, void *r)');
+const RECT = koffi.struct('R3', { l: 'int', t: 'int', r: 'int', b: 'int' });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const names = [];
+const CB = koffi.proto('int EnumCb(void *h, void *l)');
+const cb = koffi.register((h, l) => {
+  const buf = Buffer.alloc(128);
+  GetClassName(h, buf, 128);
+  const cls = buf.toString('utf8').split('\0')[0];
+  const rb = Buffer.alloc(16); GetWindowRect(h, rb); const r = koffi.decode(rb, RECT);
+  names.push(cls + '  ' + (r.r - r.l) + 'x' + (r.b - r.t));
+  return 1;
+}, koffi.pointer(CB));
+
+app.whenReady().then(async () => {
+  const win = new BrowserWindow({ width: 1280, height: 800, show: true });
+  await win.loadFile(path.join(path.resolve(__dirname, '..', '..', '..'), 'apps', 'web', 'dist', 'index.html'));
+  await sleep(2000);
+  const buf = win.getNativeWindowHandle();
+  const parent = process.arch === 'x64' ? buf.readBigUInt64LE(0) : BigInt(buf.readUInt32LE(0));
+  const surface = new VideoSurface(parent, { scaleFactor: 1.5 });
+  surface.setBounds({ x: 12, y: 60, width: 770, height: 499 });
+  surface.show();
+  await sleep(800);
+  EnumChildWindows(parent, cb, null);
+  console.log('子窗口 z 序（上 -> 下）:');
+  names.forEach((n, i) => console.log('  ' + (i + 1) + '. ' + n));
+  const si = names.findIndex(n => n.startsWith('Static'));
+  const ci = names.findIndex(n => n.includes('Chrome_RenderWidgetHost'));
+  console.log('');
+  console.log('视频子窗口在 Chromium 之上:', (si >= 0 && ci >= 0 && si < ci) ? '是 ✅' : '否 ❌');
+  surface.destroy(); app.exit(0);
+}).catch((e) => { console.error(e); app.exit(1); });

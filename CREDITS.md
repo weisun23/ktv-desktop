@@ -15,6 +15,6 @@
 
 ## karaoke-companion
 
-- Original project maintained by `weisun23`
+- 同作者项目：本项目与 `karaoke-companion` 均由 `weisun23` 开发。
 - License: MIT
 - A copy is included at `LICENSES/karaoke-companion-MIT.txt`

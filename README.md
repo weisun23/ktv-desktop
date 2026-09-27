@@ -1,6 +1,6 @@
 # KTV Desktop
 
-Windows 桌面版 KTV 点歌系统，面向客厅、KTV 包间、触屏点歌机和 Windows 迷你主机。
+Windows 桌面版 KTV 点歌系统，面向客厅、KTV 包间、触屏点歌机和 Windows 迷你主机。项目复用同作者的 `karaoke-companion`，并参考非商业项目 `maidong-ktv` 的实现方案。
 
 > **非商业项目**：本项目仅供个人学习、研究、测试和非商业使用。禁止商业运营、收费使用、售卖、租赁、硬件预装、捆绑分发或提供收费技术支持。详见 [LICENSE](LICENSE)。
 
@@ -36,7 +36,7 @@ Windows 桌面版 KTV 点歌系统，面向客厅、KTV 包间、触屏点歌机
 
 | 来源 | 使用范围 |
 |---|---|
-| `karaoke-companion` (MIT) | Vue 3 前端 UI、歌词组件、在线音乐聚合后端、播放队列业务 |
+| `karaoke-companion`（同作者项目，MIT） | Vue 3 前端 UI、歌词组件、在线音乐聚合后端、播放队列业务 |
 | `maidong-ktv` (非商业许可) | **仅参考实现方案**：原伴唱切换策略、曲库分发格式、取流协议流程 |
 
 > ⚠️ **与 maidong-ktv 的关系**：只参考其架构思路与功能行为，不复制源码、界面素材或品牌，也不内置其第三方取流凭证。详见 [docs/00-architecture.md](docs/00-architecture.md) §4。

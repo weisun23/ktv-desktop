@@ -9,8 +9,11 @@ This project is distributed for non-commercial use only. See `LICENSE` for the p
 - License: Maidong non-commercial license
 - Full text: `LICENSES/Maidong-NonCommercial.txt`
 
-## karaoke-companion
+## First-party project reuse
 
+### karaoke-companion
+
+- 同作者项目，由 `weisun23` 开发。
 - License: MIT
 - Full text: `LICENSES/karaoke-companion-MIT.txt`
 
